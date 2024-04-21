@@ -1,0 +1,102 @@
+local gui = Instance.new("ScreenGui")
+gui.IgnoreGuiInset = true
+gui.DisplayOrder = 999
+gui.Name = "Soviet Union ☭"
+local vpf = Instance.new("ViewportFrame")
+vpf.Parent = gui
+vpf.BackgroundTransparency = 1
+vpf.Size = UDim2.new(1,0,1,0)
+local virtual = Instance.new("Camera")
+local realCamera = workspace.CurrentCamera
+virtual.Parent = gui
+vpf.CurrentCamera = virtual
+realCamera.Changed:Connect(function(pr)
+	pcall(function()
+		virtual[pr] = realCamera[pr]
+	end)
+end)
+virtual.CameraType = Enum.CameraType.Scriptable
+virtual.FieldOfView = realCamera.FieldOfView
+
+
+local plrs = game:GetService("Players")
+
+function CommunismChar(char)
+	local sovietUnion = Instance.new("Model")
+	sovietUnion.Name = char.Name
+	for a,e in char:GetChildren() do
+		e:Clone().Parent = sovietUnion
+	end
+	return sovietUnion
+end
+function CommunismBox(char:Model)
+	local plr = plrs:GetPlayerFromCharacter(char)
+	local color = Color3.new(1, 0, 0)
+	if plr.TeamColor ~= nil then
+		color = plr.TeamColor
+	end
+	local pos,size = char:GetBoundingBox()
+	local part = Instance.new("Part")
+	part.Anchored = true
+	part.Size = size
+	part.CFrame = pos
+	part.Color = color.Color
+	part.CanCollide = false
+	part.CastShadow = false
+	part.TopSurface = "Smooth" part.BottomSurface = "Smooth"
+	part.Transparency = 0.8
+	part.Material = Enum.Material.Neon
+
+	
+	
+	return part
+end
+
+function Add(plr:Player)
+	if plr == plrs.LocalPlayer then return end
+	local CurrentChar = plr.Character or plr.CharacterAdded:Wait()
+	local connection:RBXScriptConnection
+	CurrentChar = CommunismBox(CurrentChar)
+	local function addVPF(obj)
+		if obj == nil or not obj:IsA("Player") then return end
+		local tar = obj
+		connection = game["Run Service"].RenderStepped:Connect(function()
+			if CurrentChar ~= nil then CurrentChar:Destroy() end
+			if tar.Character == nil then return end
+			CurrentChar = CommunismBox(tar.Character)
+			CurrentChar.Parent = vpf
+		end)
+		
+		
+	end
+	plr.Destroying:Connect(function()
+		if CurrentChar ~= nil then
+			CurrentChar:Destroy()
+		end
+		connection:Disconnect()
+	end)
+	plr.CharacterRemoving:Connect(function(char)
+		if CurrentChar ~= nil then
+			CurrentChar:Destroy()
+		end
+		connection:Disconnect()
+	end)
+	plr.CharacterAdded:Connect(function(char)
+		if CurrentChar ~= nil then
+			CurrentChar:Destroy()
+		end
+		CurrentChar = CommunismBox(char)
+		addVPF(plr)
+	end)
+	
+	addVPF(plr)
+end
+
+plrs.PlayerAdded:Connect(Add)
+for i,v in plrs:GetPlayers() do
+	Add(v)
+end
+
+
+
+gui.Parent = game.CoreGui
