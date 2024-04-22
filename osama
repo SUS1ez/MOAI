@@ -1,1 +1,40 @@
-print("fuck aaro")
+local UserInputService = game:GetService("UserInputService")
+
+UserInputService.InputBegan:Connect(function(a,e)
+	if a.KeyCode == Enum.KeyCode.Z and e == false then
+		local plr = game:GetService("Players").LocalPlayer
+		local char = plr.Character
+		local hum:Humanoid,root:Part = char:WaitForChild("Humanoid"),char:WaitForChild("HumanoidRootPart")
+		hum:ChangeState(Enum.HumanoidStateType.Physics)
+		root.CFrame = root.CFrame*CFrame.new(0,3,0)
+		root.AssemblyLinearVelocity = root.CFrame.LookVector*50+Vector3.new(0,50,0)
+		task.wait(1)
+		hum:ChangeState(Enum.HumanoidStateType.Landed)
+	end
+	if a.KeyCode == Enum.KeyCode.X and e == false then
+		local plr = game:GetService("Players").LocalPlayer
+		local char = plr.Character
+		local hum:Humanoid,root:Part = char:WaitForChild("Humanoid"),char:WaitForChild("HumanoidRootPart")
+		hum:ChangeState(Enum.HumanoidStateType.Physics)
+	end
+	if a.KeyCode == Enum.KeyCode.C and e == false then
+		local plr = game:GetService("Players").LocalPlayer
+		local char = plr.Character
+		local hum:Humanoid,root:Part = char:WaitForChild("Humanoid"),char:WaitForChild("HumanoidRootPart")
+		hum:ChangeState(Enum.HumanoidStateType.Landed)
+	end
+	
+	
+end)
+
+
+
+
+
+
+
+
+
+
+
+
